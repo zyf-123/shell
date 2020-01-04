@@ -1,0 +1,45 @@
+#!/bin/bash
+#display user's info ...
+/bin/echo "please input the username"
+read username
+/bin/grep $username /etc/passwd  > /dev/null 2> /dev/null
+#判断用户是否存在
+if [ $? -eq  0 ] 
+then /bin/echo "username is : $username "
+else 
+     /bin/echo "user $username does not exist"
+     exit 1  ##如果不存在，则返回错误值，然后立即退出
+fi 
+/bin/echo
+#list /etc/passwd  info 
+userinfo=`/bin/grep ^$username:x /etc/passwd` ##为了精确匹配用户信息，必须是用户名开头，后面是：x的数据
+userid=`/bin/echo $userinfo | /usr/bin/awk -F : '{print $3}'`
+groupid=`/bin/echo $userinfo | /usr/bin/awk -F : '{print $4}'`
+homedir=`/bin/echo $userinfo | /usr/bin/awk -F : '{print $6}'`
+shell=`/bin/echo $userinfo | /usr/bin/awk -F : '{print $7}'`
+
+# get group name from GID 
+grouptmpname=`cat /etc/group | /bin/grep :x:$groupid`
+groupname=`/bin/echo $groupname | /usr/bin/awk -F : '{print $1}'`
+/bin/echo "user id is $userid"
+/bin/echo "defaule group is : $groupname "
+/bin/echo "home directiory is : $homedir "
+/bin/echo "shell is : $shell"
+/bin/echo "group memebbers info"
+
+#get group members
+groups=`/usr/bin/groups $username`
+/bin/echo $groups 
+/bin/echo 
+
+#get login info 
+userlogin=`/usr/bin/who | /bin/grep $username`
+if  [ "$userlogin" != "" ]
+then
+	/bin/echo "$username is online "
+else 
+ 	/bin/echo "$username NOT logged in"
+fi
+
+
+  
