@@ -1,0 +1,10 @@
+#!/bin/bash
+#这个脚本用来kill user's all process
+/bin/ps aux | grep $1 | /usr/bin/awk '{ print $2}' > /tmp/pid.txt
+killid=`cat /tmp/pid.txt`
+for PID in $killid
+do 
+ 	/bin/kill -9 $PID 2> /dev/null
+done
+
+
